@@ -234,6 +234,7 @@
 
     section.addEventListener("pointerdown", (e) => {
       if (e.target.closest(".suite")) return;
+      if (e.pointerType === "mouse") e.preventDefault(); // évite que le glissé sélectionne la page
       section.setPointerCapture(e.pointerId);
       glisse = { x: e.clientX, y: e.clientY, bouge: false, cible: e.target.closest(".nuage__carte") };
     });
@@ -328,7 +329,11 @@
 
     let depart = null, glisseRecent = false;
     const zone = document.getElementById("carrousel");
-    zone.addEventListener("pointerdown", (e) => { depart = e.clientX; glisseRecent = false; });
+    zone.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") e.preventDefault();
+      depart = e.clientX;
+      glisseRecent = false;
+    });
     zone.addEventListener("pointerup", (e) => {
       if (depart === null) return;
       const dx = e.clientX - depart;

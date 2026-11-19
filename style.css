@@ -197,6 +197,8 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 
 /* ---------- Accueil : nuage ---------- */
 .chapitre--nuage { background: #000; cursor: grab; touch-action: none; }
+/* Zones qu'on fait glisser à la souris : pas de sélection de texte ni d'image */
+.chapitre--nuage, .carrousel, .situation3d { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .chapitre--nuage.est-en-glisse { cursor: grabbing; }
 .nuage { position: absolute; inset: 0; perspective: 1000px; overflow: clip; }
 .nuage__carte {

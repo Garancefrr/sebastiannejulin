@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sébastianne Julin, peintre</title>
+  <meta name="description" content="Sébastianne Julin, artiste peintre installée à Lille. Paysages imaginaires peints au pinceau et à la spatule.">
+  <link rel="canonical" href="https://www.sebastiannejulin.fr/">
+  <!-- Aperçu quand le lien est partagé (WhatsApp, Instagram, mail…) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Sébastianne Julin">
+  <meta property="og:title" content="Sébastianne Julin, peintre de paysages imaginaires">
+  <meta property="og:description" content="Peinture à l'huile, au pinceau et à la spatule. Atelier à Lille.">
+  <meta property="og:url" content="https://www.sebastiannejulin.fr/">
+  <meta property="og:image" content="https://www.sebastiannejulin.fr/apercu.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icone-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <link rel="preload" href="polices/InterTight-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="polices/polices.css">
+  <link rel="stylesheet" href="style.css?v=15">
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <div class="cadre">
+
+    <!-- Interface fixe -->
+    <a class="logo" href="#/nuage">Sébastianne <em>Julin</em></a>
+
+    <nav class="pilules" aria-label="Navigation principale">
+      <a class="pilule pilule--accent" href="#/oeuvres">Œuvres</a>
+      <a class="pilule" href="#/artiste">L'artiste</a>
+      <a class="pilule" href="#/contact">Contact</a>
+    </nav>
+
+    <p class="signature">Peinture à l'huile <span aria-hidden="true">✳</span> Lille, France</p>
+
+    <div class="son">
+      <span class="son__icone" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path class="son__onde" d="M15.5 9.2a4 4 0 0 1 0 5.6M18 7a7 7 0 0 1 0 10"/></svg>
+      </span>
+      <button class="son__bouton" id="son" type="button" aria-pressed="false" aria-label="Lancer l'ambiance sonore">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="son__lecture" d="M8 5.5v13l10.5-6.5z"/><path class="son__pause" d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z"/></svg>
+      </button>
+    </div>
+
+    <ol class="progression" id="progression" aria-label="Chapitres"></ol>
+
+    <!-- Chapitre 1 : accueil, le nuage de toiles -->
+    <section class="chapitre chapitre--nuage" id="nuage" aria-label="Accueil">
+      <div class="nuage" id="nuage-scene"></div>
+      <h1 class="accroche"><span class="invisible">Sébastianne Julin, peintre de </span>Paysages <em>imaginaires</em></h1>
+      <p class="consigne">Glisser pour explorer<span class="consigne__suite"> <span aria-hidden="true">·</span> Défiler pour continuer</span></p>
+      <button class="suite" type="button" data-suivant aria-label="Chapitre suivant">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </button>
+    </section>
+
+    <!-- Chapitre 3 : les œuvres une à une -->
+    <section class="chapitre chapitre--oeuvres" id="oeuvres" aria-label="Œuvres">
+      <div class="bascule" role="group" aria-label="Affichage des œuvres">
+        <button type="button" id="vue-carrousel" aria-pressed="true">Une à une</button>
+        <button type="button" id="vue-grille" aria-pressed="false">Toutes</button>
+      </div>
+      <div class="grille" id="grille" hidden></div>
+      <div class="carrousel" id="carrousel">
+        <div class="carrousel__piste" id="piste"></div>
+      </div>
+      <div class="carrousel__commandes">
+        <button class="bouton-verre" type="button" id="precedente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg> Précédente
+        </button>
+        <span class="compteur" id="compteur"></span>
+        <button class="bouton-verre bouton-verre--clair" type="button" id="suivante">
+          Suivante <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Chapitre 4 : l'artiste -->
+    <section class="chapitre chapitre--artiste" id="artiste" aria-label="L'artiste">
+      <div class="artiste__fond" aria-hidden="true"></div>
+      <div class="artiste__contenu">
+        <h2 class="artiste__recit">
+          Originaire de Mulhouse. Formée à Rouen, Paris et <em>Florence.</em> Dix ans en Afrique subsaharienne. Aujourd'hui, l'atelier est à <em>Lille.</em>
+        </h2>
+        <div class="artiste__colonnes">
+          <div>
+            <p class="etiquette">Démarche</p>
+            <p>Des paysages déchiquetés, des falaises, des montagnes déchirées, peints dans une palette sombre et crépusculaire où la lumière perce par éclats. La peinture à l'huile est posée au pinceau puis travaillée à la spatule, en couches épaisses qui gardent la trace du geste.</p>
+          </div>
+          <div>
+            <p class="etiquette">Distinction</p>
+            <p>1<sup>er</sup> prix de peinture du Salon des Indépendants, Rouen, 1988.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapitre 5 : parcours (CV) -->
+    <section class="chapitre chapitre--parcours" id="parcours" aria-label="Parcours">
+      <div class="parcours">
+        <h2 class="parcours__titre">Expositions <em>&amp;</em> formation</h2>
+        <div class="parcours__grille">
+          <div>
+            <p class="etiquette">Expositions</p>
+            <ol class="cv">
+              <li><span class="cv__annee">2026</span><span>Foire d'Art Contemporain de Strasbourg, avec Jean-Marc Bassand Art Gallery</span></li>
+              <li><span class="cv__annee">2026</span><span>Touquet International Art Fair (TIAF), avec Jean-Marc Bassand Art Gallery</span></li>
+              <li><span class="cv__annee">2025</span><span>Foire d'Art Contemporain de Strasbourg, avec Jean-Marc Bassand Art Gallery</span></li>
+              <li><span class="cv__annee">2025</span><span>Parcours Art Contemporain Art In Situ, sur la Route des Grands Crus</span></li>
+              <li><span class="cv__annee">2024</span><span>Salon Artcité, Fontenay-sous-Bois</span></li>
+              <li><span class="cv__annee">2022</span><span>Art Fair Dijon, foire d'art contemporain</span></li>
+              <li><span class="cv__annee">2022</span><span>Exposition personnelle, Paris 8<sup>e</sup></span></li>
+              <li><span class="cv__annee">1989</span><span>Exposition de groupe, Galerie de Hautefeuille, Paris</span></li>
+            </ol>
+          </div>
+          <div>
+            <p class="etiquette">Formation</p>
+            <ol class="cv">
+              <li><span class="cv__annee">1990</span><span>Istituto del Restauro, Florence</span></li>
+              <li><span class="cv__annee">1988–1993</span><span>Académie de Port-Royal, Paris</span></li>
+              <li><span class="cv__annee">1987–1989</span><span>Histoire de l'art contemporain, Paris 1 Panthéon-Sorbonne</span></li>
+              <li><span class="cv__annee">1985–1990</span><span>École des Beaux-Arts de Rouen</span></li>
+            </ol>
+            <p class="etiquette parcours__prix">Prix</p>
+            <ol class="cv">
+              <li><span class="cv__annee">1988</span><span>1<sup>er</sup> prix de peinture, Salon des Indépendants, Rouen</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapitre 6 : contact -->
+    <section class="chapitre chapitre--contact" id="contact" aria-label="Contact">
+      <div class="contact">
+        <div class="contact__texte">
+          <p class="etiquette">Une toile vous parle ?</p>
+          <h2 class="contact__titre">Écrire <em>à</em> Sébastianne</h2>
+          <p class="contact__note">Prix, disponibilité, visite de l'atelier à Lille.</p>
+          <ul class="contact__liens">
+            <li><a href="mailto:sebastianne.fourreau@dbmail.com">sebastianne.fourreau@dbmail.com</a></li>
+            <li><a href="tel:+33667840733">06 67 84 07 33</a></li>
+            <li><a href="https://www.instagram.com/sebastianne.julin/" target="_blank" rel="noopener">Instagram @sebastianne.julin</a></li>
+          </ul>
+        </div>
+
+        <form class="formulaire" id="formulaire" novalidate>
+          <label class="champ">
+            <span>Votre nom</span>
+            <input type="text" name="name" autocomplete="name" required>
+          </label>
+          <label class="champ">
+            <span>Votre e-mail</span>
+            <input type="email" name="email" autocomplete="email" required>
+          </label>
+          <label class="champ">
+            <span>Votre message</span>
+            <textarea name="message" id="message" rows="5" required></textarea>
+          </label>
+          <input type="checkbox" name="botcheck" class="invisible" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="formulaire__bas">
+            <button class="bouton-verre bouton-verre--clair" type="submit" id="envoyer">Envoyer le message</button>
+            <p class="formulaire__etat" id="formulaire-etat" role="status"></p>
+          </div>
+        </form>
+        <p class="mentions">© Sébastianne Julin. Toutes les œuvres reproduites sont protégées. <button type="button" id="ouvrir-mentions">Mentions légales</button></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Fiche d'une œuvre en plein écran -->
+  <div class="fiche" id="fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-titre" hidden>
+    <div class="fiche__image" id="fiche-zone">
+      <img id="fiche-image" alt="">
+      <!-- La toile à l'échelle, au-dessus d'un canapé de 2,10 m -->
+      <div class="situation" id="situation" hidden>
+        <div class="situation3d" id="situation3d">
+          <p class="situation3d__legende">Enfilade de 1,80 m, pour l'échelle <span aria-hidden="true">·</span> Glisser pour tourner</p>
+          <p class="situation3d__chargement" id="situation3d-chargement">Préparation de la pièce…</p>
+        </div>
+        <div class="situation__piece" id="situation-piece" hidden>
+          <div class="situation__sol"></div>
+          <img class="situation__toile" id="situation-toile" alt="">
+          <svg class="situation__canape" viewBox="0 0 210 85" aria-hidden="true">
+            <rect x="6" y="18" width="198" height="40" rx="7"/>
+            <rect x="0" y="34" width="22" height="38" rx="6"/>
+            <rect x="188" y="34" width="22" height="38" rx="6"/>
+            <rect x="14" y="50" width="182" height="24" rx="4"/>
+            <rect x="22" y="74" width="5" height="11"/><rect x="183" y="74" width="5" height="11"/>
+          </svg>
+          <p class="situation__echelle">Canapé de 2,10 m, pour l'échelle</p>
+        </div>
+      </div>
+    </div>
+    <div class="fiche__infos">
+      <p class="etiquette" id="fiche-numero"></p>
+      <h2 class="fiche__titre" id="fiche-titre"></h2>
+      <dl class="fiche__details" id="fiche-details"></dl>
+      <div class="bascule bascule--fiche" role="group" aria-label="Affichage de la toile" id="bascule-fiche">
+        <button type="button" id="vue-toile" aria-pressed="true">La toile</button>
+        <button type="button" id="vue-situation" aria-pressed="false">En situation</button>
+      </div>
+      <div class="fiche__actions">
+        <div id="fiche-action"></div>
+        <button class="bouton-verre" type="button" id="partager">Partager</button>
+      </div>
+      <p class="fiche__aide" id="fiche-aide">Cliquez sur la toile pour voir la matière de près.</p>
+    </div>
+    <button class="bouton-verre fiche__fermer" type="button" id="fiche-fermer">Fermer</button>
+  </div>
+
+  <!-- Mentions légales -->
+  <div class="legal" id="legal" role="dialog" aria-modal="true" aria-labelledby="legal-titre" hidden>
+    <div class="legal__boite">
+      <h2 id="legal-titre">Mentions légales</h2>
+      <h3>Éditrice du site</h3>
+      <p>Sébastianne Julin, artiste peintre, Lille.<br>Contact : <a href="mailto:sebastianne.fourreau@dbmail.com">sebastianne.fourreau@dbmail.com</a>, 06 67 84 07 33.<br>Directrice de la publication : Sébastianne Julin.</p>
+      <h3>Hébergement</h3>
+      <p>GitHub Pages, service de GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.</p>
+      <h3>Propriété intellectuelle</h3>
+      <p>Les œuvres, leurs photographies et les textes de ce site appartiennent à Sébastianne Julin. Toute reproduction, même partielle, est interdite sans son autorisation écrite.</p>
+      <h3>Données personnelles</h3>
+      <p>Ce site ne dépose aucun cookie et ne mesure pas l'audience. Les polices de caractères sont hébergées sur le site lui-même. Les informations envoyées avec le formulaire de contact (nom, e-mail, message) sont transmises par le service Web3Forms à Sébastianne Julin, uniquement pour vous répondre. Elles ne sont ni conservées sur ce site, ni cédées à qui que ce soit. Vous pouvez demander leur suppression en écrivant à l'adresse ci-dessus.</p>
+      <button class="bouton-verre bouton-verre--clair" type="button" id="fermer-mentions">Fermer</button>
+    </div>
+  </div>
+
+  <script src="oeuvres.js?v=4"></script>
+  <script src="app.js?v=11"></script>
+</body>
+</html>

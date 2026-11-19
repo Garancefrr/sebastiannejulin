@@ -2,7 +2,7 @@
   // ---------- Réglages ----------
   // Clé Web3Forms : à créer sur https://web3forms.com avec l'adresse de Sébastianne, puis à coller ici.
   // Tant qu'elle est vide, le formulaire ouvre un e-mail pré-rempli à la place.
-  const WEB3FORMS_CLE = "";
+  const WEB3FORMS_CLE = "f7c58c54-5122-42b9-b25c-be16e5d49605";
   const EMAIL = "sebastianne.fourreau@dbmail.com";
 
   const OEUVRES = window.OEUVRES || [];

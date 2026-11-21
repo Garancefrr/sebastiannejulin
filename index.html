@@ -23,7 +23,7 @@
   <meta name="theme-color" content="#000000">
   <link rel="preload" href="polices/InterTight-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="polices/polices.css">
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=18">
   <script type="importmap">
     { "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -184,23 +184,18 @@
   <div class="fiche" id="fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-titre" hidden>
     <div class="fiche__image" id="fiche-zone">
       <img id="fiche-image" alt="">
-      <!-- La toile à l'échelle, au-dessus d'un canapé de 2,10 m -->
+      <!-- La toile à l'échelle, dans le lieu choisi -->
       <div class="situation" id="situation" hidden>
-        <div class="situation3d" id="situation3d">
-          <p class="situation3d__legende">Enfilade de 1,80 m, pour l'échelle <span aria-hidden="true">·</span> Glisser pour tourner</p>
-          <p class="situation3d__chargement" id="situation3d-chargement">Préparation de la pièce…</p>
-        </div>
-        <div class="situation__piece" id="situation-piece" hidden>
-          <div class="situation__sol"></div>
+        <div class="situation__scene" id="situation-scene">
+          <img class="situation__fond" id="situation-fond" alt="">
           <img class="situation__toile" id="situation-toile" alt="">
-          <svg class="situation__canape" viewBox="0 0 210 85" aria-hidden="true">
-            <rect x="6" y="18" width="198" height="40" rx="7"/>
-            <rect x="0" y="34" width="22" height="38" rx="6"/>
-            <rect x="188" y="34" width="22" height="38" rx="6"/>
-            <rect x="14" y="50" width="182" height="24" rx="4"/>
-            <rect x="22" y="74" width="5" height="11"/><rect x="183" y="74" width="5" height="11"/>
-          </svg>
-          <p class="situation__echelle">Canapé de 2,10 m, pour l'échelle</p>
+        </div>
+        <p class="situation__echelle">Échelle indicative</p>
+        <div class="decors" role="group" aria-label="Choisir un lieu" id="decors">
+          <button type="button" data-decor="salon" aria-pressed="true"><img alt="" width="56" height="37" loading="lazy"><span>Salon</span></button>
+          <button type="button" data-decor="hall" aria-pressed="false"><img alt="" width="56" height="37" loading="lazy"><span>Hall d'entreprise</span></button>
+          <button type="button" data-decor="conference" aria-pressed="false"><img alt="" width="56" height="37" loading="lazy"><span>Salle de conférence</span></button>
+          <button type="button" data-decor="bureau" aria-pressed="false"><img alt="" width="56" height="37" loading="lazy"><span>Bureau</span></button>
         </div>
       </div>
     </div>
@@ -238,6 +233,6 @@
   </div>
 
   <script src="oeuvres.js?v=4"></script>
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>

@@ -3,6 +3,10 @@
   // Clé Web3Forms : à créer sur https://web3forms.com avec l'adresse de Sébastianne, puis à coller ici.
   // Tant qu'elle est vide, le formulaire ouvre un e-mail pré-rempli à la place.
   const WEB3FORMS_CLE = "f7c58c54-5122-42b9-b25c-be16e5d49605";
+  // EmailJS : e-mail mis en page (modèle dans email/modele-emailjs.html). Quand les trois valeurs sont
+  // remplies, le formulaire passe par EmailJS ; sinon il continue d'utiliser Web3Forms.
+  const EMAILJS = { service: "", modele: "", cle: "" };
+  const SITE = "https://www.sebastiannejulin.fr";
   const EMAIL = "sebastianne.fourreau@dbmail.com";
 
   const OEUVRES = window.OEUVRES || [];
@@ -451,7 +455,6 @@
     if (fiche.hidden) return;
     fiche.hidden = true;
     oeuvreOuverte = null;
-    fermer3d();
     if (historique) {
       if (vers || !ficheDansHistorique) history.replaceState(null, "", `#/${vers || courant}`);
       else { ignorerAdresse = true; history.back(); }
@@ -487,62 +490,69 @@
   });
   ficheZone.addEventListener("pointermove", (e) => { if (ficheZone.classList.contains("est-zoomee")) deplacerZoom(e); });
 
-  // « En situation » : la toile à l'échelle sur un mur, au-dessus d'un canapé de 2,10 m
-  const MUR_L = 4.2, MUR_H = 2.7, SOL = 0.35; // mètres représentés
+  // « En situation » : la toile à l'échelle sur le mur d'une photo de pièce.
+  // Repères en pixels de la photo (1536 × 1024) : x, y = centre de l'accrochage,
+  // echelle = pixels par mètre sur le mur, basMax = limite basse pour ne pas toucher le mobilier.
+  const DECORS = {
+    salon: {
+      x: 800, y: 265, echelle: 285, basMax: 490, nom: "un salon",
+      // Petits formats : un coin de la pièce vu de plus près, sans zoom sur la photo
+      petit: { fichier: "salon-coin", x: 1000, y: 215, echelle: 365, basMax: 398, nom: "un coin de salon" },
+    },
+    hall: { x: 762, y: 400, echelle: 210, basMax: 630, nom: "un hall d'entreprise" },
+    conference: { x: 822, y: 310, echelle: 178, basMax: 520, nom: "une salle de conférence" },
+    bureau: { x: 768, y: 270, echelle: 265, basMax: 490, nom: "un bureau" },
+  };
+  let decorChoisi = "salon"; // conservé d'une toile à l'autre
+  const sceneSituation = document.getElementById("situation-scene");
+  const fondSituation = document.getElementById("situation-fond");
+  const toileSituation = document.getElementById("situation-toile");
+  const boutonsDecor = [...document.querySelectorAll("#decors button")];
+  const borner = (v, min, max) => Math.min(max, Math.max(min, v));
+  boutonsDecor.forEach((b) => { b.querySelector("img").src = `images/web/decor-${b.dataset.decor}-168.webp`; });
+
+  // Les petits formats passent sur le décor rapproché (fauteuil), s'il existe
+  const PETIT_FORMAT = { hauteur: 100, largeur: 80 }; // en cm, limites incluses
+  function reglagesDecor(o) {
+    const [haut, large] = (o.dimensions.match(/\d+/g) || []).map(Number);
+    const decor = DECORS[decorChoisi];
+    return haut <= PETIT_FORMAT.hauteur && large <= PETIT_FORMAT.largeur && decor.petit ? decor.petit : decor;
+  }
+
   function placerSituation() {
     const o = oeuvreOuverte;
     if (!o || situation.hidden) return;
-    const piece = document.getElementById("situation-piece");
+    const d = reglagesDecor(o);
     const boite = situation.getBoundingClientRect();
-    const total = MUR_H + SOL;
-    const echelle = Math.min(boite.width / MUR_L, boite.height / total); // pixels par mètre
-    piece.style.width = `${MUR_L * echelle}px`;
-    piece.style.height = `${total * echelle}px`;
-    const h = hauteurCm(o) / 100;
+    if (!boite.width || !boite.height) return;
+    const h = (hauteurCm(o) / 100) * d.echelle;
     const w = h * ratio(o);
-    const bas = Math.max(1.0, 1.55 - h / 2); // centre à 1,55 m, jamais sur le dossier du canapé
-    const toile = document.getElementById("situation-toile");
-    toile.src = photo(o, 800);
-    toile.alt = `${o.titre}, à l'échelle au-dessus d'un canapé`;
-    Object.assign(toile.style, {
-      width: `${w * echelle}px`,
-      height: `${h * echelle}px`,
-      left: `${((MUR_L - w) / 2) * echelle}px`,
-      top: `${(MUR_H - bas - h) * echelle}px`,
+    const cy = Math.max(h / 2 + 24, Math.min(d.y, d.basMax - h / 2));
+    // La photo couvre toute la zone, recadrée autour de la toile
+    const s = Math.max(boite.width / 1536, boite.height / 1024);
+    const W = 1536 * s, H = 1024 * s;
+    Object.assign(sceneSituation.style, {
+      width: `${W}px`,
+      height: `${H}px`,
+      left: `${borner(boite.width / 2 - d.x * s, boite.width - W, 0)}px`,
+      top: `${borner(boite.height / 2 - cy * s, boite.height - H, 0)}px`,
     });
-    const canape = piece.querySelector(".situation__canape");
-    Object.assign(canape.style, {
-      width: `${2.1 * echelle}px`,
-      height: `${0.85 * echelle}px`,
-      left: `${((MUR_L - 2.1) / 2) * echelle}px`,
-      top: `${(MUR_H - 0.85 + 0.02) * echelle}px`,
+    Object.assign(toileSituation.style, {
+      width: `${w * s}px`,
+      height: `${h * s}px`,
+      left: `${(d.x - w / 2) * s}px`,
+      top: `${(cy - h / 2) * s}px`,
     });
-    piece.style.setProperty("--sol", `${(MUR_H / total) * 100}%`);
   }
-  // La pièce en 3D est chargée seulement la première fois qu'on la demande
-  let module3d = null;
-  const chargement3d = document.getElementById("situation3d-chargement");
-  function situation3d(o) {
-    const zone3d = document.getElementById("situation3d");
-    const piece2d = document.getElementById("situation-piece");
-    chargement3d.hidden = false;
-    module3d = module3d || import("./situation3d.js?v=5");
-    module3d
-      .then((m) => {
-        if (oeuvreOuverte !== o || situation.hidden) return;
-        m.ouvrir(zone3d, { image: photo(o, 1600), hauteur: hauteurCm(o) / 100, ratio: ratio(o) });
-        chargement3d.hidden = true;
-      })
-      .catch(() => {
-        // Pas de 3D possible (navigateur ancien, hors ligne…) : la version dessinée prend le relais
-        zone3d.hidden = true;
-        piece2d.hidden = false;
-        situation.classList.add("est-en-2d");
-        placerSituation();
-      });
-  }
-  function fermer3d() {
-    if (module3d) module3d.then((m) => m.fermer()).catch(() => {});
+  function afficherDecor() {
+    const o = oeuvreOuverte;
+    if (!o) return;
+    const d = reglagesDecor(o);
+    fondSituation.src = `images/web/decor-${d.fichier || decorChoisi}-1536.webp`;
+    toileSituation.src = photo(o, 1600);
+    toileSituation.alt = `${o.titre}, accrochée dans ${d.nom}`;
+    boutonsDecor.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.decor === decorChoisi)));
+    placerSituation();
   }
   function montrerSituation(oui) {
     situation.hidden = !oui;
@@ -553,14 +563,15 @@
     boutonSituation.setAttribute("aria-pressed", String(oui));
     boutonToile.setAttribute("aria-pressed", String(!oui));
     document.getElementById("fiche-aide").hidden = oui;
-    if (oui && oeuvreOuverte) {
-      if (situation.classList.contains("est-en-2d")) requestAnimationFrame(placerSituation);
-      else situation3d(oeuvreOuverte);
-    } else fermer3d();
+    if (oui) afficherDecor();
   }
+  boutonsDecor.forEach((b) => b.addEventListener("click", () => {
+    decorChoisi = b.dataset.decor;
+    afficherDecor();
+  }));
   boutonToile.addEventListener("click", () => montrerSituation(false));
   boutonSituation.addEventListener("click", () => montrerSituation(true));
-  window.addEventListener("resize", placerSituation);
+  new ResizeObserver(placerSituation).observe(situation);
 
   // Partager le lien direct de la toile
   boutonPartager.addEventListener("click", async () => {
@@ -576,7 +587,9 @@
   });
 
   // « Demander des informations » : direction le formulaire, déjà rempli
+  let oeuvreDemandee = null; // la toile dont parle le message, pour l'image de l'e-mail
   function demanderInfos(o) {
+    oeuvreDemandee = o;
     fermerFiche({ vers: "contact" });
     aller("contact");
     const champ = document.getElementById("message");
@@ -613,21 +626,10 @@
     etat.textContent = "Envoi en cours…";
     etat.dataset.ton = "";
     try {
-      const reponse = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_CLE,
-          subject: `Message de ${donnees.name} depuis le site`,
-          from_name: "Site Sébastianne Julin",
-          name: donnees.name,
-          email: donnees.email,
-          message: donnees.message,
-        }),
-      });
-      const resultat = await reponse.json();
-      if (!resultat.success) throw new Error(resultat.message);
+      if (EMAILJS.service && EMAILJS.modele && EMAILJS.cle) await envoyerEmailJS(donnees);
+      else await envoyerWeb3Forms(donnees);
       formulaire.reset();
+      oeuvreDemandee = null;
       etat.textContent = "Message envoyé. Sébastianne vous répondra par e-mail.";
       etat.dataset.ton = "ok";
     } catch (err) {
@@ -637,6 +639,61 @@
       envoyer.disabled = false;
     }
   });
+
+  async function envoyerWeb3Forms(donnees) {
+    const reponse = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_CLE,
+        subject: `Message de ${donnees.name} depuis le site`,
+        from_name: "Site Sébastianne Julin",
+        name: donnees.name,
+        email: donnees.email,
+        message: donnees.message,
+      }),
+    });
+    const resultat = await reponse.json();
+    if (!resultat.success) throw new Error(resultat.message);
+  }
+
+  // Paramètres du modèle d'e-mail : la toile concernée (ou l'image du site), son format, les liens
+  function parametresEmail(donnees) {
+    const o = oeuvreDemandee;
+    const echapper = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const r = o ? ratio(o) : 1200 / 630;
+    let largeur = 480, hauteur = Math.round(480 / r);
+    if (hauteur > 380) { hauteur = 380; largeur = Math.round(380 * r); }
+    const sujet = o ? `À propos de « ${o.titre} »` : "Message depuis le site";
+    return {
+      nom: donnees.name,
+      email: donnees.email,
+      message_html: echapper(donnees.message).replace(/\r?\n/g, "<br>"),
+      sujet,
+      oeuvre_titre: o ? o.titre : "Paysages imaginaires",
+      oeuvre_infos: o ? [o.annee, format(o), o.technique].filter(Boolean).join(" · ") : "Peinture à l'huile · Lille",
+      oeuvre_image: o ? `${SITE}/images/mail/${o.image}` : `${SITE}/apercu.jpg`,
+      oeuvre_largeur: String(largeur),
+      oeuvre_hauteur: String(hauteur),
+      oeuvre_lien: o ? `${SITE}/#/oeuvre/${slug(o)}` : SITE,
+      repondre_lien: `mailto:${donnees.email}?subject=${encodeURIComponent("Re : " + sujet)}`,
+      date: new Date().toLocaleString("fr-FR", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+    };
+  }
+
+  async function envoyerEmailJS(donnees) {
+    const reponse = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service_id: EMAILJS.service,
+        template_id: EMAILJS.modele,
+        user_id: EMAILJS.cle,
+        template_params: parametresEmail(donnees),
+      }),
+    });
+    if (!reponse.ok) throw new Error(await reponse.text());
+  }
 
   // ---------- Mentions légales ----------
   const legal = document.getElementById("legal");

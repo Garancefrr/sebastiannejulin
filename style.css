@@ -588,70 +588,51 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .fiche__actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .fiche__image.est-en-situation { cursor: default; }
 
-/* « En situation » : un mur, un sol, un canapé de 2,10 m et la toile à l'échelle */
-.situation {
-  position: absolute;
-  inset: clamp(40px, 9vh, 88px) clamp(24px, 4vw, 64px);
-  display: grid;
-  place-items: center;
-}
+/* « En situation » : une photo de pièce, la toile accrochée à l'échelle */
+.situation { position: absolute; inset: 0; overflow: hidden; background: #0b0b0b; }
 .situation[hidden] { display: none; }
-/* Pièce en 3D : elle occupe toute la zone de l'image, bord à bord */
-.fiche__image.est-en-situation .situation:not(.est-en-2d) { inset: 0; }
-.situation3d { position: absolute; inset: 0; overflow: hidden; background: #060606; touch-action: none; cursor: grab; }
-.situation3d:active { cursor: grabbing; }
-.situation3d__rendu { display: block; width: 100%; height: 100%; }
-.situation3d__legende, .situation3d__chargement {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  pointer-events: none;
+.situation__scene { position: absolute; }
+.fiche__image .situation__fond {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: fill; filter: none;
 }
-.situation3d__legende { bottom: 14px; width: 92%; white-space: normal; text-align: center; line-height: 1.5; color: rgba(255, 255, 255, 0.45); z-index: 1; }
-.situation3d__chargement { top: 50%; color: var(--gris); }
-.situation__piece {
-  --sol: 88%;
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  background:
-    linear-gradient(180deg, transparent var(--sol), #b9a68a var(--sol), #8f7c62 100%),
-    radial-gradient(ellipse 70% 60% at 50% 30%, #f1eee7, #ddd8ce 80%);
-}
-.situation__piece::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0;
-  top: var(--sol);
-  height: 1.2%;
-  background: rgba(0, 0, 0, 0.12);
-}
-.situation__toile {
-  position: absolute;
+.fiche__image .situation__toile {
+  position: absolute; inset: auto;
   object-fit: fill;
-  box-shadow: 0 10px 22px -6px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.2);
+  filter: none;
+  box-shadow: 5px 9px 16px rgba(0, 0, 0, 0.42), 14px 24px 44px -8px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
-.situation__canape { position: absolute; z-index: 1; fill: #7d847d; stroke: none; overflow: visible; }
-.situation__canape rect:nth-child(4) { fill: #8b928b; }
-.situation__canape rect:nth-child(n+5) { fill: #3a3d3a; }
 .situation__echelle {
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
-  z-index: 2;
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(40, 32, 22, 0.75);
+  position: absolute; top: 14px; left: 14px; z-index: 2; margin: 0;
+  padding: 6px 10px; border-radius: 8px;
+  font-family: var(--mono); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88); background: rgba(12, 12, 12, 0.5);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
+/* Choix du lieu : des vignettes posées sur la scène */
+.decors {
+  position: absolute; left: 50%; bottom: 14px; z-index: 3;
+  transform: translateX(-50%);
+  display: flex; gap: 4px;
+  max-width: calc(100% - 20px);
+  padding: 5px;
+  overflow-x: auto; scrollbar-width: none;
+  border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 14px;
+  background: rgba(12, 12, 12, 0.68);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+.decors::-webkit-scrollbar { display: none; }
+.decors button {
+  flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 92px; padding: 4px; border: 0; border-radius: 9px;
+  background: transparent; color: rgba(255, 255, 255, 0.76);
+  font: inherit; font-size: 0.6875rem; line-height: 1.15; cursor: pointer;
+}
+.fiche__image .decors img { position: static; inset: auto; display: block; width: 84px; height: 50px; object-fit: cover; border-radius: 6px; filter: none; }
+.decors span { min-height: 2.3em; display: flex; align-items: center; text-align: center; }
+.decors button:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+.decors button[aria-pressed="true"] { color: #111; background: var(--accent); }
+.decors button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
 .fiche__vendue { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
 .fiche__fermer { position: absolute; top: 14px; right: 14px; }
 
@@ -683,7 +664,10 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
   .chapitre--oeuvres > .bascule { top: 66px; }
   .grille { padding: 112px 14px 90px; }
   .grille__colonnes { columns: 2; column-gap: 12px; }
-  .situation { inset: 56px 12px 12px; }
+  .decors { left: 8px; right: 8px; bottom: 8px; transform: none; max-width: none; }
+  .decors button { width: 78px; }
+  .situation__echelle { top: auto; bottom: 106px; left: 10px; }
+  .fiche__image .decors img { width: 70px; height: 42px; }
   .bascule--fiche { margin-bottom: 14px; }
 }
 
